@@ -1,0 +1,590 @@
+% Copyright (C) 2024 Auguth Research Foundation.
+%
+% This file is part of Executable Security Standards (ESS).
+
+% License
+% --------
+% This work is licensed under the GNU Free Documentation License.
+% To view a copy of this license, visit https://www.gnu.org/licenses/fdl-1.3.html
+%
+% File Information
+% -----------------
+% - Title : Executable Security Standards (ESS).
+% - Author : Joby J Reuben
+% - Affiliation : Auguth Research Foundation
+% - Email : joby@auguth.org
+% - Created At : Bangalore, India
+% - Type : Latex-File(.tex)
+% - Path : "ess(root)/ess.tex"
+%
+%
+% 
+%
+\documentclass[9pt]{IEEEtran} % Template : IEEETran
+
+% Include preamble file
+\input{preamble.tex}
+
+\begin{document}
+
+\title{$\mathbb{E}$xecutable $\mathbb{S}$ecurity $\mathbb{S}$tandards (${\mathbf{ESS}}$) \\ \vspace{3mm} \normalsize{Language Agnostic Security Specific Rules} \vspace{2mm} \\ \textbf{\texttt{\today}} \vspace{1mm} }
+
+\author{\IEEEauthorblockN{\normalsize{\textsc{Joby Reuben}}} \\
+\IEEEauthorblockA{\normalsize{{Auguth Research Foundation}}} \\
+\normalsize{Bangalore, India \\
+joby@auguth.org} \vspace{-5mm} \\
+}
+
+\maketitle
+
+\normalsize
+
+\begin{center}
+\begin{spacing}{0.8}
+\begin{justify}
+\texttt{\scriptsize{\textit{LICENSE}: \texttt{This document is licensed under the terms of the GNU Free Documentation License, Version 1.3 published by the Free Software Foundation. A copy of the license is included in the document's source repository}}}
+\end{justify}
+\end{spacing}
+\end{center}
+
+\begin{abstract}
+\small{
+Executable Security Standard (ESS) defines a mandatory set of standards that has to be followed while programming executables written in different high level languages to ensure utmost security and maintenance practices. The ESS provides a language-agnostic set of standards that should be in compliance to assure intended safe execution. The primary goal of ESS is to provide safety over computation. This set of rules can be utilized for writing safe executable programs that can be deployed to ALAN. The ESS has derived rules from some of the language-specific security standards such as \textit{MISRA} \& \textit{CERT} standards and provides a comprehensive language-agnostic security rules.
+}
+\end{abstract}
+
+\tableofcontents
+
+\subsection{Codebase}
+\label{ESSCodebase}
+
+\begin{enumerate}
+  \item \textit{Codebase Definition}: A codebase is a separate code file or an application-specific source folder, including code files, test cases, and related resources.
+  \item \textit{Function Categorization}: Functions must be organized by category or operation, within separate codebases for different operations (e.g., encoding, state, runtime, etc )
+  \item \textit{Data Type Codebase}: New data type definitions or type alias used throughout multiple codebases must be declared in a seperate codebase.
+  \item \textit{Loose Coupling}: Codebases must be loosely coupled, interacting only through its defined interface function i.e., public functions.
+  \item \textit{Interface Functions}: Each loosely coupled module or codebase must have interface functions which may call its internal private functions.
+  \item \textit{Function Cohesion}: Functions within a codebase must be highly cohesive, performing a single, definitive operation.
+  \item \textit{Utility Separation}: Utility functions or application-agnostic functions must be separated from application-specific codebases.
+  \item \textit{Inter-Module Interaction}: Functions from one loosely coupled module or codebase must not directly use functions from another, except for utility or application-agnostic functions.
+  \item \textit{Eliminate Unreachable Code}: Avoid including unreachable code that is never executed due to control flow reasons. Such code should be identified and removed.
+  \item \textit{Remove Dead Code}: Do not maintain dead code—code that is written but never executed, regardless of execution paths or conditions. Eliminate redundant, obsolete, or unnecessary code.
+  \item \textit{Avoid Unused Declarations}: Ensure that the codebase does not contain unused type declarations, such as structs, enums, type aliases or any declarations that are defined but never used or referenced. 
+  \item \textit{Distinct and Unique External Identifiers}: External identifiers, including function names, global variables, and type aliases, should be distinct and unique across all codebases.
+  \item \textit{Unique Internal Identifiers}: Internal identifiers within a codebase or within a function should be unique to avoid conflicts. Proper names should be given according to the definitive purpose they serve.
+  \item \textit{Global Variables and Definitions}: Global variables, definitions, and functions should only be defined in a single codebase and should not be duplicated across different codebases. Categorical codebases should be maintained for global definitions serving distinct purposes.
+  \item \textit{Internal Definitions}: Definitions specific to a codebase should not be used externally by other codebases. Only global definitions, which are defined in global specified codebases, should be utilized externally.
+  \item \textit{Adopt Structured Programming}: Use structured programming practices for codebases. Avoid using \texttt{goto} statements or labels to jump to different logic segments, ensuring a linear flow.
+  \item \textit{Avoid Commenting Out Code}: Use version control systems to access previous versions of the source code; commenting out sections of code is strictly prohibited for preventing accidental reintroduction.
+  \item \textit{Clean File Names}: Source code file names should be clean and concise, avoiding symbols (except for underscores as space substitutes) and spaces to prevent compiler and file system incompatibility.
+  \item \textit{Distinct Identifiers} : In a loosely coupled codebase, identifiers names (e.g., variable, function, type aliases) must be distinct and clearly reflect their single, well-defined purpose or operation.
+  \item \textit{Avoid Ambiguity}: Identifiers with similar names that differ only by case or symbols are strictly prohibited. Names should be explicit and unambiguous, clearly indicating their purpose within the codebase.
+  \item \textit{Comments Not for Dead-Code}: Comments should contain only general information for maintainability and clarity, and must not include dead code.
+  \item \textit{Avoiding Visually Similar Characters}: Avoid typographically similar identifier names, e.g., do not use identifier characters that resemble one another, such as I and l.
+  \item \textit{One-Definition Rule}: Each entity in a codebase (such as a function, variable, or type) must have exactly one definition within the entire codebase/application.
+  \item \textit{Avoid Global Identifiers Conflicts}: Any identifier used in multiple codebases should be uniquely defined and must not conflict with identifiers in other codebases of the application.
+  \item \textit{Import Declarations at Utilization Area}: External linkage of other codebases and their identifiers should be declared at the top of the utilization line and included in a comment for clarity and maintenance purposes.
+  \item \textit{Identifiers with Specializations}: All specializations of identifiers should be included in the same codebase as their primary declarations.
+  \item \textit{Comments Structure Rule}: Comments should precede the code they describe and must not be placed on the same line as the code. Avoid excessive whitespace within comments.
+  \item \textit{Unique Module Names}: Ensure internal and external module or library names are unique.
+  \item \textit{Clarifying Relationships}: Clarify the relationship between two logical statements/expressions/declarations in comments or via explicit identifier naming.
+  \item \textit{Initialized Variables Only}: Use initialized or defined variables; never rely on execution involving undefined identifiers.
+  \item \textit{Module data access restrictions}: Data from one module/codebase should not be accessed by another module/codebase unless explicit access to bounded data is provided for specific operations.
+  \item \textit{Remove debugging entrypoints in production}: Production code should not contain any debugging entry points.
+  \item \textit{Confinement of security primitives}: Ensure that code utilizing security primitives is confined to an individual codebase.
+  \item \textit{Permission for Cross-Calling}: Specify permission for cross-calling between modules/functions; do not respond if the requesting module/function lacks permission.
+\end{enumerate}
+
+\subsection{Types}
+\label{ESSTypes}
+
+\begin{enumerate}
+  \item \textit{Create Explicit Type Aliases}: If languages offer type definitions with names that doesn't specify explicit bounds or signedness, create type aliases that clearly specify memory bounds (e.g., 8-bit) and signedness (e.g., unsigned for non-negative values, signed for both positive and negative values).
+  \item \textit{Use Static Types}: Prefer using static types with known bounds that are checked at compile time. 
+  \item \textit{Favor Stack-Based Types}: Prioritize stack-based types over heap-based dynamic types and avoid issues associated with heap management.
+  \item \textit{Prefer Immutable Data Types}: Use immutable data types whenever possible. Opt for mutable data types only when the logic cannot be defined immutably.
+  \item \textit{Avoid Abstracted Data Types for Low-Level Values}: Avoid using types that result in inefficient memory usage. Instead, use appropriate low-level types for memory efficiency.
+  \item \textit{Byte Sequences}: Use usinged 8-bit integers i.e., \texttt{u8} arrays i.e., \texttt{ary[u8:N]} or vectors i.e., \texttt{vec[u8]} for representing byte sequences.
+  \item \textit{Type Specification}: All variables, definitions, function parameters (inputs and outputs) must specify their type or an enum variant. Avoid languages with dynamic types.
+  \item \textit{Unique Enum Values}: Each implicitly-specified enum variant must have a unique value, always ensure there are no conflicts, even if the values are assigned by the compiler.
+  \item \textit{Overflow and Wrapping}: Overflows should be predetermined, and wrapping should be explicitly specified if allowed. Ensure that no runtime panics occur by handling it appropriately.
+  \item \textit{Avoid Unions}: Unions should be avoided in favor of strict, well-defined types.
+  \item \textit{Prefer References}: Use references i.e., smart pointers instead of raw pointers to ensure safer memory access.
+  \item \textit{Manage Conversion of Data Types}: Carefully manage the conversion i.e., casting of data types with different memory layouts.
+  \item \textit{Function Qualifiers}: Function types should not use qualifiers like mutable, immutable, constant, concurrent, or atomic, which are intended for modifying variables, not function types.
+  \item \textit{Prefer Safe Data Types}: Always use sub-sequence data types such as slices and avoid variable or flexible array types, which are intended to be static during compile time. Instead, use dynamic arrays, such as vectors, which may allocate their data on the heap.
+  \item \textit{Use Fixed Integer Sizes}: Always use fixed integer sizes, such as \texttt{u32}/\texttt{i32} or \texttt{u64}/\texttt{i64}, for size expression's return values i.e., \texttt{u-size} or \texttt{i-size}. To avoid architecture-specific issues, either fix an executable version for a specific architecture or create versions of executables for the desired architecture for performance effectiveness.
+  \item \textit{Implement Error Handling}: Always use special error handling types, such as \texttt{Option}, or ensure that there is a null variant for functions or expressions that may encounter errors or inconsistencies.
+  \item \textit{Array Size Declaration}: Array sizes should be defined as constants, avoiding the representation of a minimum number of elements.
+  \item \textit{Never Use Intermediate Variables}: Avoid intermediate/temporary or logically duplicated variables that possess the same type qualifier and are used only once.
+  \item \textit{Escape Sequences Rule}: Avoid escape sequences in strings that are not defined by the language.
+  \item \textit{Pre \& Suffix in Asssigned Values}: Avoid type value suffixes or prefixes; instead, use new type aliases that define the type’s bounds and signedness.
+  \item \textit{Avoid Unsafe Macros}: Refrain from using macros that rely on textual substitutions without inherent type safety. Prefer languages that ensure safety by limiting textual substitution models and tightly integrating macro syntax with the language syntax.
+  \item \textit{Avoid Unsafe Preproccessor Directives}: Refrain from using arbitrary textual substitutions such as preproccessor directives for conditional compilation.
+  \item \textit{Variable Instances Consistency}: Every instance of an object used across the codebase must be consistent with its declared data type.
+  \item \textit{Avoid Bit-Value Assignment}: Always prefer safe-types to declare values, rather than directly assigning values at the bit level.
+  \item \textit{Value 0 is not Null}: The integer/literal/value zero (\texttt{0)} should not be treated as a \texttt{null} type. Use a specific \texttt{null} type provided by the language instead.
+  \item \textit{Null as Enum Variant}: \texttt{null} can be considered an enum variant, as applicable in the Option Type \texttt{(null, some)}. All enum variant rules apply to \texttt{null}.
+  \item \textit{Choosing Types for its Nature}: Use types for their intended purpose; for example, do not use char type to store integer values, as it is strictly for storing characters such as UTF-8 characters.
+  \item \textit{Types for Exception Handling}: Use \texttt{Result} and \texttt{Option} types to simplify exception and handling.
+  \item \textit{Conversion of Base to Derived}: Converting or casting a base type/identifier to a derived type/identifier should not occur on hierarchical structures.
+  \item \textit{Never use Raw-Pointers}: Do not use raw pointer casting i.e., conversion; avoid pointer-based expressions, operations, and initiations.
+  \item \textit{Qualifiers during Casting}: When casting, any qualifiers such as mutable, immutable, atomic, constants, or references should not be ignored, removed, or unwrapped from the new casted type.
+  \item \textit{Never Cast Function Types}: Function types which are not similar to variables should not be cast to any new data type.
+  \item \textit{Floating Point Integers Precision-Issues}: Floating-point types should avoid using equality and inequality operators due to varying precision issues; instead, use a range-based approach to check equality within a specific threshold.
+  \item \textit{Braces on Array Initialization}: Braces must be used for non-zero initialization of arrays or similar data types.
+  \item \textit{Enum Variant Consistent Initialization}: Enumerator lists should utilize a consistent method of initialization for all its variants.
+  \item \textit{Bit-Fields Types}: In cases of using bit-fields for compact representation, restrict the type to boolean or a signed or unsigned type based on the nature of the bit field.
+  \item \textit{Sign Bit on Bit-Field Types}: Bit-fields that require signedness should ensure that the number of bits the type occupies is greater than two to explicitly accommodate the sign bit.
+  \item \textit{Abstract Data Types}: While using abstracted data types, avoid revealing the underlying structure to the function; only necessitate its intended logical execution on the abstracted data type and expose the minimum amount of objects.
+  \item \textit{Avoid Floating-Point Issues}: Avoid using floating-point integer types with rounding, arithmetic, and precision issues in critical code run by various hardware.
+  \item \textit{No Denormalized Floating Points}: Do not use denormalized floating-point numbers as values.
+  \item \textit{Integer for Precise Computation}: For precise computation, use integer data types instead of floating point types.
+  \item \textit{Fixed Array Sizes}: Do not use types that provide variable length arrays; the array size should be fixed during compile time.
+  \item \textit{Array Bounds Specification}: Specify array bounds, i.e., size in every instance of initialization or when using the initialized array variable.
+  \item \textit{String Literal Consistency}: Avoid concatenating different types of string literals; instead, use consistent types.
+  \item \textit{Returning Empty Arrays}: Prefer returning an empty array over a \texttt{null} value, providing a flag that the array has zero elements.
+  \item \textit{Compatible Value Types}: Compatible values should have the same type; avoid type mismatch and loss of precision.
+  \item \textit{Standard Layout Types}: Always avoid non-standard layout types; prefer POD and standard layout types.
+  \item \textit{Internal Representation}: Avoid manipulating any internal or hidden representation of a defined object.
+  \item \textit{Moved Objects}: Do not depend on a moved object's value.
+  \item \textit{Complete and valid encoded data}: Encoded data types such as character or string should be complete and valid; avoid partial or invalid data.
+  \item \textit{Use Option type}: Use \texttt{Option} type instead of directly relying on null for absence of value.
+  \item \textit{Handle exceptional floating point values}: Handle exceptional floating point values such as NaN (Not a Number), positive and negative infinity.
+  \item \textit{Correct underlying data types}: Only operate or inspect values using their correct underlying data types rather than relying on their string representation or any abstracted forms.
+  \item \textit{Mutable Reference Types}: Never define or declare a mutable reference type, i.e., a mutable smart pointer.
+  \item \textit{Avoid references to mutable data types}: Do not create references to mutable data types.
+  \item \textit{Enumeration Labels}: Do not rely on numeric values associated with enumeration variants; treat them only as labels.
+  \item \textit{Immutable Numeric Constants}: Numeric constants with immutable qualifiers must not be updated in later releases.
+  \item \textit{Avoid Generics for High Security}: Do not use generics where security requirements are high.
+  \item \textit{Use Option types for null safety}: Use \texttt{Option} types to safely handle null variants of data types and avoid null pointer exceptions.
+  \item \textit{Standard encoding for strings and characters}: Ensure that string and character values should be encoded from standard formats.
+  \item \textit{Valid scope for data references}: References to data should only be initialized within the valid scope of that data.
+  \item \textit{Enumerations for Short Lists}: Use enumerations for short lists of variants; for longer lists, prefer collection data types.
+\end{enumerate}
+
+\subsection{Declarations}
+\label{ESSDeclarations}
+
+\begin{enumerate}
+  \item \textit{Initialize Definitions}: Definitions must be initialized before being read or operated on. Prefer safe initializations over assigning empty values, especially for sequences, structs, and complex data structures.
+  \item \textit{Avoid Redundant Initialization}: Avoid redundant modification or initialization of variables. Ensure that each variable is initialized only once.
+  \item \textit{Avoid Identifier Shadowing}: Identifiers declared in an inner scope should not hide or shadow identifiers declared in an outer scope.
+  \item \textit{Avoid Undefined Constructs}: Avoid definitions that negate a specific expression or logic. Instead, define constructs that are guaranteed to be used within the codebase. To remove a construct, eliminate its definition from the codebase entirely.
+  \item \textit{Eliminate Dormant Objects}: All variables and definitions declared, regardless of their qualifier, must be utilized in expressions. Dormant objects should not exist in the codebase.
+  \item \textit{Data Type Modifiability}: Define data types only to be modifiable for their intended operation and purpose, and not globally modifiable.
+  \item \textit{Identifiers Inside Scopes}: Identifiers declared in inner scopes should not have the same name as those in outer scopes.
+  \item \textit{Never Re-use Identifiers}: An identifier utilized must not be reused for an object or function within the same scope.
+  \item \textit{Global Scope Usage}: Maintain clarity with identifiers used within their scope and minimize global scope usage.
+  \item \textit{Specializations Variants}: Identifiers/objects should either have specializations defined for all variants or none at all (e.g., \texttt{identifier\_i8}, \texttt{identifier\_u8}, or \texttt{identifier}) to avoid unintended errors during function calls.
+  \item \textit{Conflict-Free Identifiers}: Identifiers should not declare multiple qualifiers that conflict with each other; prefer conflict-free qualifier declaration, or at most, a single qualifier. 
+  \item \textit{Reserved Identifier Conflicts}: Never define new identifiers that have naming conflicts with language or library reserved identifiers.
+  \item \textit{Derived Identifier Name Resolution}: A declared identifier within a hierarchical structure must be accessed by including all base identifiers to ensure clear name resolution.
+  \item \textit{Initialization Order}: Have a well-defined initialization order of identifiers and objects; avoid circular dependencies.
+  \item \textit{Prefer bounded initializations}: Prefer bounded initializations throughout all constructs defined in the codebase.
+  \item \textit{Avoid nested wrappers}: Do not create nested wrappers for individual types or resources.
+  \item \textit{Variable Scope}: If a variable is used only within a single function, it should be declared at the block scope (inside the function) rather than at the file scope and vice versa.
+\end{enumerate}
+
+\subsection{Expressions}
+\label{ESSExpression}
+
+\begin{enumerate}
+  \item \textit{Promote Cohesion in Expressions}: To minimize side effects, expressions should be highly cohesive and broken down into finer, more focused expressions.
+  \item \textit{Avoid Raw Pointers}: Refrain from using raw pointers or their equivalent pointer related expressions, including arithmetic operations, comparisons, and conversions, under any circumstances.
+  \item \textit{Correct Placement of Statements}: Statements, expressions, and declarations should be correctly placed in accordance with the intended preceding and succeeding logical statements or expressions as dictated by the language’s syntax.
+  \item \textit{No Side Effects}: Initialization logic or expressions should be free of side effects beyond their immediate scope, such as modifying global variables, performing I/O operations, or altering the state of external systems.
+  \item \textit{Use Parentheses for Clarity}: Use parentheses to make the precedence of operators explicit within expressions. This enhances clarity and prevents unintended behavior. For example, in the expression $3 + 4 * 5$, multiplication has higher precedence than addition, so the result is $3 + (4 * 5)$.
+  \item \textit{Write Expressions Separately}: Expressions should be written on separate lines rather than being separated by commas within the same line.
+  \item \textit{Only Define Logically-Executable Expressions}: Avoid expressions that are logically impossible to execute; ensure that all possible execution paths are valid and reachable under some conditions.
+  \item \textit{Avoid Sub-Expressions}: Expressions should be highly cohesive; sub-expressions should be avoided.
+\end{enumerate}
+
+\subsection{Functions}
+\label{ESSFunctions}
+
+\begin{enumerate}
+  \item \textit{Parameter Naming and Documentation}: Name function parameters according to their purpose. 
+  \item \textit{Pupose of Function Parameters}: Use comments to explain the purpose of function parameter names if it isn't self-explanatory.
+  \item \textit{Ensure Strict Typing}: Functions must strictly enforce types for all variables to prevent type-related errors and ensure correct behavior.
+  \item \textit{Global Function Rule}: The identifier \texttt{main} shall not be used for any function other than the global function \texttt{main}.
+  \item \textit{Function Access Control}: Define functions as public if they need to be accessed by other codebases i.e., interface functions in loosely coupled codebases. 
+  \item \textit{Cohesive Functions}: Define highly cohesive functions under interface functions as private since they should only be accessible by the interface functions. 
+  \item \textit{Utility Functions}: General utility functions (e.g., bit and byte manipulation) can be declared public and defined in a separate codebase.
+  \item \textit{Function Re-Declarations Rule}: Avoid function re-declarations; instead, define functions in a single codebase for clarity.
+  \item \textit{Avoid Unused Input Parameters}: Do not include unused input parameters in functions.
+  \item \textit{Function Inlining}: Based on the compiled target purpose and expected executable size, determine whether to inline highly cohesive functions that are rigorously called in multiple instances. 
+  \item \textit{Inlining Interface Functions}: Interface functions i.e., public functions of loosely coupled codebases are exempt from inlining.
+  \item \textit{Size/Length Functions}: Variable-length types or arrays shall include a size or length function in standard libraries to fetch the number of elements. When passing such a variable to a function, ensure that it is not mistakenly interpreted as the size of the pointer rather than the original array.
+  \item \textit{Mandatory Return Values}: All functions with non-void return types must return a value consistent with their declared data type.
+  \item \textit{Array Size in Function Parameters}: If a function parameter includes an array, the size/length identifier must also be specified in the function signature.
+  \item \textit{Return Types}: Return types of functions should be proper, justifiable, and memory efficient. They must avoid inappropriate data types, including those perceived as raw binary values.
+  \item \textit{Utilization of Function Outputs}: All returned outputs from functions must be utilized within the application or passed to other functions.
+  \item \textit{Immutable Function Parameters}: Function parameters i.e., input and output arguments must be immutable, preventing any mutability of parameters inside \& outside the function scope.
+  \item \textit{No-Return Functions}: Functions designed to terminate control flow such as \texttt{thorw,exit}, distinct from other void functions, should use the proper keyword based on language syntax to indicate they do not return any value. Such functions should have a void return type.
+  \item \textit{Function Calls}: Provide input parameters in the correct order i.e., index, during function calls to ensure proper execution and expected results
+  \item \textit{Use Safe Data Type Functions}: Use data types with safely abstracted internal/external functions or operators for comparison, copying, and concatenation. 
+  \item \textit{Pointers Included Functions}: Avoid using functions that operate directly on pointers.
+  \item \textit{Handle Type Conversion Functions}: Functions used for type conversions should be meticulously managed to detect invalid inputs and handle errors efficiently.
+  \item \textit{Use Standardized Time Formats}: Avoid using time and date functions that may provide inaccurate or imprecise outputs. Instead, use standardized time formats, such as Unix Epoch Time.
+  \item \textit{Access Control for APIs}: Ensure API or public functions are protected with strong access control or permissions.
+  \item \textit{Validate Imported Functions}: Imported functions from external libraries should handle invalid inputs, data inconsistencies, and overflow issues.
+  \item \textit{Never Use Restricted Functions}: Functions with void or null return types that do not produce any state transitions should not exist in the codebase.
+  \item \textit{Eliminate Dormant Functions}: All functions should have proper control flow and must be callable; dormant functions should not exist in the codebase.
+  \item \textit{Arguments Utilization}: All arguments provided to a function must be utilized in a way that impacts the return value; if not, the argument must not be declared.
+  \item \textit{Nested Function Declarations}: Functions should not be declared i.e., defined inside other functions; prefer externally calling functions declared at the file or class scope.
+  \item \textit{Exceptions Handling of Cohesive Functions}: Error or exception handling must be specific to highly cohesive functions and must not be allowed outside the functions. 
+  \item \textit{Exception wrapped Parameters}: If parameters wrapped with exceptions are passed, the receiver must expect and handle the exception.
+  \item \textit{Proper Function Signatures}: Functions utilized in multiple codebases should have similar signatures, including parameters and names.
+  \item \textit{Explicit Single Return Rule}: All functions must include a single return statement to explicitly provide an exit path, even if the language does not require it.
+  \item \textit{Utilization of Function-Identifiers}: A function identifier should only be used to either call the function directly or be used for a reference.
+  \item \textit{Avoiding Mutable References}: Functions should not return references to mutable identifiers; ensure that returned references point to immutable objects/identifiers.
+  \item \textit{Avoid Overloading Functions}: Do not use function overloading; instead, use a single function and prefer enums for undeterministic parameter types.
+  \item \textit{Sanitized Data to Functions}: The data served to functions should only include sanitized data with bounds 
+  \item \textit{Explicit Function Definitions}: Define private and public functions explicitly to avoid importing private functions that should not be called by other codebases.
+  \item \textit{Floating Point Casting}: Cast a floating-point return type of a function to an integer to avoid precision issues related to floating-point types.
+  \item \textit{File Creation Return Value}: The return value of file creation functions should be ensured, as it may fail due to various reasons such as permission issues, system limitations, etc.
+  \item \textit{Null-Terminated Strings}: Do not pass a non-null-terminated string to a function that expects a null-terminated string.
+  \item \textit{Minimum Access Levels}: Grant the minimum level of access necessary for client-sde processes to perform their functions.
+  \item \textit{Platform-Independent Functions}: Use platform-independent functions instead of relying on specific functions or libraries for a specific OS or kernel.
+  \item \textit{Variadic Functions}: Variadic functions with a variable number of arguments should be avoided; prefer a static fixed number of arguments provided at compile time.
+  \item \textit{Simple Signal Handlers}: Signal handler functions should only perform simple, reentrant operations that do not interact with shared resources.
+  \item \textit{Return Value}: Any state changes that occur as a result of executing a function or expression must not extend beyond returning a value.
+  \item \textit{Signal Handler Simplicity}: Signal handler functions should not change the handling of signals or modify the program's state in complex ways.
+  \item \textit{No Return from Signal Handlers}: Signal handler functions must not return any value. Instead, they should perform necessary cleanup or logging and then terminate or recover the program as needed.
+  \item \textit{Transient Failure Handling}: Wrap failing functions in a loop and handle transient failures are handled properly.
+  \item \textit{Separate Success and Error Signals}: Do not mix success values with error indications in the same output. Use different ways to signal those outcomes.
+  \item \textit{Reset Global Error Status}: If a program uses a global variable to register the last function call's error status, always reset this variable after reading it.
+  \item \textit{Mask Non-Interruptible Signals}: Mask signals handled by non-interruptible signal handler functions to prevent them from being interrupted.
+  \item \textit{Signals for Exceptional Conditions}: Avoid using signals or signal handler functions to implement normal program functionality; use them only for exceptional conditions or asynchronous events.
+  \item \textit{Asynchronous-Safe Functions}: Call only asynchronous-safe functions within signal handler functions. 
+  \item \textit{Signal Handlers}: A signal handler function shall be a Plain Old function.
+  \item \textit{Avoid exposing internal state}: Do not expose the internal state of a code base/modules from a public function; only use it for control flow to the module's private functions.
+  \item \textit{Revert state on function failure}: On function failure, ensure that the program's state is reverted to its prior condition.
+  \item \textit{Execute cleanup logic}: Ensure that cleanup logic is executed on a function's exit path regardless of errors handled.
+  \item \textit{Do not define overridable functions}: Do not define or invoke overridable functions.
+  \item \textit{Use standardized syntax for API functions}: Always define and use a strict syntax for safe invocation of API functions and avoid text-based or string-based submissions.
+  \item \textit{Character Count Functions}: For determining the number of characters in a string, use suitable functions valid for the string data type's encoding format.
+\end{enumerate}
+
+\subsection{Operations}
+\label{ESSOperations}
+
+\begin{enumerate}
+  \item \textit{Type Conversion}: Type conversion for logical operations should not narrow or lose precision. Keep return and input types consistent with the same nature. 
+  \item \textit{Valid Range for Shift Operations}: The value used to determine the number of positions to shift in a bit shift operation must be within the range from zero up to one less than the number of bits in the type being shifted.
+  \item \textit{Avoid Operations in Conditional Evaluations}: The right-hand operand of logical \texttt{AND} ($\wedge$) or \texttt{OR} ($\vee$) operators should not include operations, as it may not be evaluated if the left-hand operand determines the condition.
+  \item \textit{Ensure Signedness on Operands}: Operators use the same signedness for types. Simplify expressions into highly cohesive forms by including pre- and post-expressions that do not affect the signedness rule.
+  \item \textit{Cast Types to Match during Operation}: When applying logical operators to types from other types, ensure both types are the same. If not, cast the types to match.
+  \item \textit{Boolean restricted Operators}: Boolean types should be restricted to the following operators: Assignment, Logical \texttt{AND, OR, NOT}, Equal To, Not Equal To.
+  \item \textit{Enum and Character restricted Operators}: Enum and character types should only use the following operators: Assignment, Equal To, Not Equal To.
+  \item \textit{Avoiding Signed Types}: Never use signed types for bitwise operators.
+  \item \textit{Cohesion on Operators}: The increment (\texttt{++}) and decrement (\texttt{--}) operators should be cohesive. 
+  \item \textit{Avoid Overloading these Operators}: Do not overload the comma operator, \texttt{AND} operator, or \texttt{OR} operator.
+  \item \textit{Ensure Boolean Representation}: Operands of operators such as \texttt{NOT}, \texttt{AND}, and \texttt{OR} should be of type boolean, or explicitly provide a boolean representation for correct evaluation.
+  \item \textit{Signedness Effects on Operators}: Operators should be assigned to compatible types; for example, the minus operator (\texttt{-}) must not be applied to expressions with an unsigned type.
+  \item \textit{Address-of-Operator for References}: The address-of operator should provide an abstracted reference instead of direct raw-pointer address access.
+  \item \textit{Avoid Side-Effects of Certain Operands}: Operands of logical \texttt{AND} and \texttt{OR} operators should not have side effects.
+  \item \textit{Avoiding Comma Operator}: The comma operator shall not be used in expressions where it returns the result of the last operand.
+  \item \textit{Division \& Modulo Safety}: Ensure that division and modulo operations do not include divide-by-zero expressions, resulting in undefined errors.
+  \item \textit{Bitwise Shift Operations}: Never use bitwise shift operators with negative numbers and above the number of bits of the operand data type.
+  \item \textit{Modulo Operator Usage}: Use the return data type as unsigned when using the modulo operator on unsigned operands, and signed operands if any one operand is signed.
+  \item \textit{Bitwise Operands Restrictions}: Use bitwise operands on unsigned types or operands only.
+  \item \textit{Sizeof Operator Usage}: Do not use the \texttt{sizeof} operator or attempt to return the size of a referenced array, as it may return the size of the reference instead of the underlying array data type.
+  \item \textit{File Operations Clarity}: Operations after opening a file should be clear, i.e., \texttt{read, write, concat}; include only one method of operation with clear intent.
+  \item \textit{String Truncation Prevention}: String operations should not truncate strings, leading to data loss or precision.
+  \item \textit{Array Size Specification}: Operations or functions that utilize array data types must always specify the array size in all recurring expressions.
+  \item \textit{Evaluated Operands}: Write operands that are surely evaluated; avoid unevaluated operands.
+  \item \textit{Qualifier Constraints}: Expressions and operations should respect the qualifier constraints of the data type it utilizes.
+  \item \textit{Iterators and Loop Counters}: Use iteration operations only on valid ranges of well-defined objects.
+  \item \textit{Multiple Iterators}: Perform operations on multiple iterators only if they refer to the same data structure.
+  \item \textit{Iterator Overflow}: Operations on iterators should not result in overflow; if so, it should be handled.
+  \item \textit{Valid Access}: Use valid indices, iterators, or smart pointers (i.e., references) for operations that access elements of objects.
+  \item \textit{Valid Range}: Pre-determine the valid range of elements for an object before executing operations or functions on them.
+  \item \textit{Read/Write Correctness}: When switching between operations on the same object, such as reading and writing, ensure correctness.
+  \item \textit{Character Encoding Consistency}: Keep character encoding consistent across codebases to ensure proper numeric value comparison or other operations.
+  \item \textit{User-defined regional rules}: Do not ignore user-defined regional rules or format on values of data types that depend on them when performing operations.
+  \item \textit{Operate on values of data types}: Operations should be performed on the values of wrapped or nested data types, rather than on their object or wrapped references.
+  \item \textit{No simultaneous operations}: There should be no simultaneous multiple operations on an individual data item.
+  \item \textit{Avoid NaN operations}: Avoid operations that involve NaN (Not a number) and ensure expressions do not result in NaN.
+  \item \textit{Specify access permissions}: Specify access permissions for specific operations rather than granting general access to functions, operations or expressions that might use the data.
+  \item \textit{No side effects during operations}: Ther should be no side effects on the operands during operation execution except for the intended operational effects.
+  \item \textit{Hide sensitive information in errors}: Exceptions or error messages should not reveal any sensitive information.
+  \item \textit{Prefer hexadecimal or raw binary format}: Prefer opting for hexadecimal or raw binary format for writing byte sequences in any operation.
+  \item \textit{Specific operation permissions}: Granted permissions should be specific to an operation and are revoked once its execution is complete.
+  \item \textit{Reference Equality Checks}: When using equality operators with references, ensure the operators check equality of the data they point to.
+\end{enumerate}
+
+\subsection{Loops and Conditionals}
+\label{ESSLoops}
+
+\begin{enumerate}
+  \item \textit{Standard Loop Structure}: \texttt{for} loops must include initialization ($\texttt{int i} = 0$), condition ($\texttt{i} < 10$), iteration expression  or loop counter ($\texttt{i}++$), and loop body.
+  \item \textit{Use Integer Types for Loop Counters}: Loop counters should be of an integer type rather than a floating-point type.
+  \item \textit{Ensure Finite Iterations}: All loops should be properly terminated, with loop-controlling expressions that are neither constants nor invariants. Include an iteration expression, and ensure that looping iterations are finite. 
+  \item \textit{Boolean Evaluation in Loops}: Controlling expressions in loops must evaluate to a boolean expression.
+  \item \textit{Proper Loop Bodies}: The bodies of loops must be enclosed within a block.
+  \item \textit{Isolate Side Effects}: A full expression containing an increment ($++$) or decrement ($--$) operator should have no other potential side effects.
+  \item \textit{Proper Conditional Bodies}: The bodies of conditionals must be enclosed within a block.
+  \item \textit{Avoid Variable Wrapping in Loops}: Avoid wrapping iteration variables in loop counters.
+  \item \textit{Mandatory Else Statement}: Include an \texttt{else} statement in \texttt{if} conditional structures, even when using \texttt{else-if} branches.
+  \item \textit{Form Well-Structured Switch Statements}: \texttt{switch} statements, used as an effective alternative to long \texttt{if-else-if} chains for pattern matching, should be well-formed. Avoid cases that fall outside the expected value or label’s scope. 
+  \item \textit{Include Breaks in Switch Statements to Prevent Fall-Through}: In languages that allow fall-through in \texttt{switch} statements, always include \texttt{break} expressions. 
+  \item \textit{Include a Default Switch Statement Case}: Include a default case in \texttt{switch} statements to handle unmatched cases. Place the default case in last of the switch block similar to \texttt{else} condition.
+  \item \textit{Use Multiple Patterns for Switch Statements}: Only use \texttt{switch} statements when there are at least two patterns to match, excluding the default case.
+  \item \textit{Avoid Boolean Match Cases for Switch Statements}: Do not use \texttt{switch} statements with boolean values as cases. Instead, use simple \texttt{if-else} statements. 
+  \item \textit{Ternary for Simple Conditions}: Use the ternary conditional operator for simple conditions, and always use \texttt{if-else} conditions for complex ones.
+  \item \textit{Ternary Operator Rule}: When using the ternary conditional operator, the first operand should evaluate to a boolean.
+  \item \textit{Avoid Assignment in Conditionals}: Do not include assignment expressions within conditional evaluation expressions.
+  \item \textit{Type Consistency in Conditionals}: Ensure type consistency in the operands of conditional expressions and use casting if necessary.
+  \item \textit{Comparison Operators in Loop Counter}: If a loop counter is not modified using increment (\texttt{++}) or decrement (\texttt{--}) operators, it shall only be used as an operand in comparison operations within the loop condition.
+  \item \textit{Ensure Finite Looping}: Ensure that the loop counter terminates and does not result in infinite looping.
+  \item \textit{Use Loops only if}: Loops should only be utilized if iteration is required more than twice. Avoid higher-level constructs and control flow constructs for simplified direct execution.
+  \item \textit{Switch Case Logic}: Never include logical expressions or declarations inside the switch case statement before the first case label.
+  \item \textit{Conditional Control Flow}: Use switch statements or equivalent conditional control flow for executing simple instructions; for complex logic, utilize functions over switch statements.
+  \item \textit{Modify collections during iteration}: In a for-each or a for-all loop, do not modify a collection's element by writing to or removing it during loop iteration.
+\end{enumerate}
+
+\subsection{External Inputs}
+\label{ESSExternalInputs}
+
+\begin{enumerate}
+  \item \textit{Validate External Inputs}: All external inputs received from outside the application must be rigorously validated, including checks on range, data structure, length, and types.
+  \item \textit{Isolate Validation Logic}: External input validation must be isolated and separated from loosely coupled codebases to ensure that it does not impact the main application logic.
+  \item \textit{Handle Invalid Inputs Safely}: If an invalid external input is detected, it must be safely handled using \texttt{Result} type.
+  \item \textit{Invalid Inputs Audit}: Document or log all invalid sanitized inputs for debugging and auditing purposes.
+  \item \textit{Pass Valid Inputs Securely}: Valid external inputs can be passed through interface functions of loosely coupled codebases.
+  \item \textit{Prevent Injection Attacks}: Valid external inputs should not contain special or unknown characters that could be exploited via injection attacks or other security vulnerabilities.
+  \item \textit{Avoid Shell Injection Risks}: Avoid executing direct shell commands from external input arguments. Instead, use safer command methods that treat inputs as elements of commands to mitigate shell injection attacks.
+  \item \textit{Canonicalization and Sanitization}: URLs as external inputs should be canonicalized and properly sanitized.
+  \item \textit{Ensure Input Bounds}: Always ensure that input data is bounded.
+  \item \textit{Validate non-user generated inputs}: Validate non-user generated inputs such as hidden fields.
+  \item \textit{Revalidate parser data}: Data received from parsers should be revalidated to only allow valid input.
+  \item \textit{Inspect permissions}: Inspect and revoke any excessive permissions or privileges from external inputs before de-serialization.
+\end{enumerate}
+
+\subsection{Error Handling}
+\label{ESSErrorHandling}
+
+\begin{enumerate}
+  \item \textit{Prefer Error Handling Over Termination}: Always prefer error handling mechanisms over termination functions. 
+  \item \textit{Minimum Exception Expectation}: There should be at least one exception handling expectation per function.
+  \item \textit{Error Handlers}: Exception or error handlers on functions should be structured from most specific to least specific (most general).
+  \item \textit{Concise Error Handling Models}: Keep error handling simple and concise; avoid catch-all statements and define all instances of error possibilities.
+  \item \textit{Exception Handling}: Exceptions or errors should be handled within their scope.
+  \item \textit{Nested Exceptions}: Operations should not cause nested or additional exceptions or errors.
+  \item \textit{Type Conversions}: All type conversions should include error handling mechanisms.
+  \item \textit{Avoid logging in error handling}: Avoid using error or exception handling mechanisms while logging information.
+  \item \textit{Integer range for byte sequences}: Integers used for writing byte sequences in any operations should be written within the range of 0 to 255.
+  \item \textit{Resource Release}: Resources should be properly released when catching errors/exceptions to avoid leakage.
+  \item \textit{Classifiable Error Status}: Ensure error status mixed with resulting values of operations or functions should be clearly classifiable.
+  \item \textit{Proper Error Handling}: Ensure system errors are properly handled.
+\end{enumerate}
+
+
+\subsection{Memory}
+\label{ESSMemory}
+
+\begin{enumerate}
+  \item \textit{Prefer Ownership or Garbage Collection Models}: Use memory management models with ownership (e.g., Rust, Mojo) or automatic garbage collection (e.g., Go, Java) favorable for dynamic-sized types stored on the heap.
+  \item \textit{Avoid Manual Memory Control}: Do not perform manual memory management tasks such as initialization of variables, deletion, memory allocation, or freeing. Rely on automatic management mechanisms provided by the language compiler.
+  \item \textit{Ensure Proper Resource Closure}: All resources utilized by the high-level language—such as memory (stack or heap), files, network connections, threads, locks, hardware resources, timers, and GUI resources—must be properly closed or freed in the correct order (from open to close) or a well-defined automatic closing mechanism should be available to free resources.
+  \item \textit{Conditional Closure}: Resource’s state must be closed or freed only if they have been successfully opened or initialized, ensuring that no attempt is made to close, free or utlize a resource in any operations which was never opened.
+  \item \textit{Resource Scope Design}: Every resource’s scope should be clearly designed for initialization and closure.
+  \item \textit{Dangling Reference of a Freed Resource}: Avoid dangling references by not returning a reference to an automatic/local variable that is freed after the function terminates.
+  \item \textit{Ensure Non-Overlapping Memory}: When cloning and copying objects, always ensure that the memory is not being overlapped. By default, avoid memory manipulation techniques to eliminate the potential for such errors.
+  \item \textit{Separate Memory Locations}: Different data types should occupy distinct memory locations and must not overlap. 
+  \item \textit{Protect Memory Locations}: Arguments with memory locations should not be overwritten before they are utilized or passed to a function.
+  \item \textit{Prefer Safe Abstractions}: Prefer using safe abstractions over direct memory/pointer manipulation functions.
+  \item \textit{Avoid Manual Destructors}: Do not manually clean up resources using destructors or functions; rely solely on automatic memory management mechanisms. 
+  \item \textit{Resource Scope Management}: Use the minimum scope of resources possible; do not extend the lifetime of active resources if not actively used.
+  \item \textit{Atomic File Operations}: Atomic operations should be utilizied on files being modified; avoid I/O functions on modified file streams.
+  \item \textit{Memory-Safe Cleanup}: Utilize memory-safe cleanup functions provided by memory-safe languages. 
+  \item \textit{Avoid Dangling References as Return}: When a function returns a reference to a data type, ensure that the original resource or memory is not freed or deallocated after the function terminates, to prevent dangling references and undefined behavior.
+  \item \textit{String Memory Allocation}: A language's string memory allocation should have space for character data and null terminator.
+\end{enumerate}
+
+\subsection{Concurrency}
+\label{ESSConcurrency}
+
+\begin{enumerate}
+  \item \textit{Use Thread-Local Storage}: When multiple instances of a function run simultaneously, use thread-local storage to ensure that each thread has its own instance of a variable. Ensure each function instance has its own memory.
+  \item \textit{Design Functions Without Shared State}: Design functions to avoid relying on shared state or variables, thus avoiding data races by default.
+  \item \textit{Thread-Locks for Shared Memory}: When shared memory is necessary and known at compile time, use thread locks to manage concurrent access and prevent data races.
+  \item \textit{Avoid Concurrent Operations on Void or Null Data}: Concurrent operations must not be performed on void data or null values.
+  \item \textit{Avoid Direct Member Access}: During concurrent access to structures, avoid directly accessing individual members. Instead, perform operations on the entire object. 
+  \item \textit{Order of Operations and Thread Safety}: The return value of expressions and their side effects shall be independent of the order of operations and thread interleaving. 
+  \item \textit{Evaluation Order}: Ensure that expressions yield consistent results regardless of evaluation order or thread execution sequence. 
+  \item \textit{Avoid Concurrent Access Conflicts}: Do not access the same resources for read and write operations across different instances.
+  \item \textit{Use Synchronization Mechanisms}: Employ synchronization mechanisms such as locks, atomic operations, or similar functions to ensure that memory operations are performed in a sequentially consistent order.
+  \item \textit{Prevent Resource Leaks}: Avoid resource leaks by properly releasing or deallocating shared resources that are no longer needed or are out of scope. To automate this process, prefer automatic memory management over manual memory management.
+  \item \textit{Avoid Data Races with Immutable Values}: Prefer reading from immutable values to avoid data races.
+  \item \textit{Variable Scope}: Local or Thread-local variables should not be accessed outside their defined scope to prevent undefined memory behavior.
+  \item \textit{Atomic Lock Abstractions}: Use higher-level abstractions for atomic locks that manage locking internally for concurrent data access; avoid simple locks that may lead to deadlocks.
+  \item \textit{Thread-Safe Mechanisms}: Always prefer thread-safe mechanisms for managing thread lifecycles, avoiding signals for terminating threads.
+  \item \textit{Avoid Asynchronous Cancellation}: Avoid using threads that can be canceled asynchronously due to risks of inconsistent states, resource leaks, and deadlocks. Instead, adopt cooperative cancellation strategies.
+  \item \textit{Lock and Access Rules}: When a thread holds a lock for a specific data element or part of a data structure, ensure that no other threads access adjacent data concurrently.
+  \item \textit{Automated Storage Duration}: Use automated storage duration models for thread locks offered by safe languages that provide automated memory management.
+  \item \textit{Predefined Lock Order}: Lock atomic variables in a predefined order to minimize the risk of deadlocks.
+  \item \textit{Single Lock Per Operation}: Do not use more than one lock per conditional operation by a thread.
+  \item \textit{Module Lock Acquisition}: Locks used for concurrency or accessing shared resources should be acquired and released in the same module and at the same level of abstraction.
+  \item \textit{Safe Concurrency Methods}: Prefer safe concurrency methods over unsafe methods to access shared resources.
+  \item \textit{Synchronization Mechanisms}: Use synchronization mechanisms to ensure that changes made by one thread to a shared resource are visible to other threads accessing it. 
+  \item \textit{Synchronization Order}: Always properly acquire locks, modify values, and release locks in the correct order.
+  \item \textit{Thread Cleanup}: Always join and detach threads regardless of their exit status to ensure proper cleanup of resources. 
+  \item \textit{Avoid Indefinite Waiting}: Avoid performing conditional operations on shared resources that may cause other threads to wait indefinitely for the lock to be released.
+  \item \textit{Mutex Lifetime Management}: A mutex which provides exclusive access to shared resources should outlive the data it protects.
+  \item \textit{Atomic Operations Requirement}: All operations, whether compound or simple, on shared resources must be atomic. 
+  \item \textit{Non-Lock Strategies}: When attempting concurrent resource access without locks, include strategies such as versioning to avoid concurrency issues.
+  \item \textit{Mutex Destruction Safeguards}: A mutex should be fully unlocked before destroying it to avoid undefined behavior.
+  \item \textit{Synchronization for Bit-Fields}: Use proper synchronization mechanisms, such as locks or atomic operations, to prevent data races when accessing bit-fields from multiple threads.
+  \item \textit{Deadlock Prevention}: Avoid deadlocks by locking in a predefined order.
+  \item \textit{Condition Validation After Wakeup}: Conditional threads should check the condition after waking up to ensure it is still valid, mitigating spurious wake-ups.
+  \item \textit{Prevent Starvation}: Avoid unnecessary waiting conditions to prevent scenarios where threads become starved or blocked indefinitely.
+  \item \textit{Atomic Variable Reference}: Always avoid referring to an atomic variable twice in a single expression.
+  \item \textit{Lock Release}: Locks should be released in exceptional or error conditions.
+  \item \textit{Mutex Relocking}: Avoid relocking a mutex that is owned by the current thread.
+  \item \textit{Locking and global mutable variables}: Locking and concurrent logic should be implemented in the file's scope of global mutable variables that are utilized in other codebases.
+  \item \textit{Resource availability before locking}: Ensure resource availability before acquiring a lock and before initializing it.
+  \item \textit{Avoid client-defined locking patterns}: Avoid client-side inputs that define locking patterns. Always manage concurrency internally in the codebase.
+  \item \textit{Individual thread management}: Safely manage threads individually instead of using group management methods.
+  \item \textit{Notify threads based on priority}: Notify waiting threads individually based on priority for shared resources.
+  \item \textit{Locking strategies for shared access}: Shared access to collection data structures or types should prefer locking the entire structure for frequent read operations, and granular element locks for frequent write operations.
+  \item \textit{Prevent simultaneous operations}: Prevent simultaneous read and write operations on shared resources.
+  \item \textit{Awaiting threads in loops}: Involve loops for awaiting threads that access shared resources.
+  \item \textit{Graceful thread termination}: Do not abruptly terminate threads; instead, use flags or interruption mechanisms to notify the thread to stop.
+  \item \textit{Prefer bounded thread pools}: Prefer bounded thread pools, i.e., predefined threads over unbounded ones.
+  \item \textit{Interdependent tasks in thread pools}: Interdependent tasks in a bounded thread pool should have enough threads to complete intended operations.
+  \item \textit{Incorruptible concurrent operations}: Concurrent operations should allow only incorruptible executions, enabling proper closure of resources.
+  \item \textit{Error handling in thread operations}: Thread operations should include error handling mechanisms.
+  \item \textit{Thread-local variable reinitialization}: Thread-local variables should be reinitialized for each thread in the thread pool.
+  \item \textit{Prevent access before initialization completion}: Do not allow background threads to access initialized constructs before their initialization is complete.
+\end{enumerate}
+
+\subsection{I/O}
+\label{ESSIO}
+
+\begin{enumerate}
+  \item \textit{File Operations on Device Files}: Avoid performing file operations (like reading, writing, or seeking) on hardware device files.
+  \item \textit{Valid Character Distinction}: While performing operations on files, distinguish between valid characters from the file and End of File markers.
+  \item \textit{Check Return Values}: When reading data from files, always check that the return value indicates success, and do not assume the read data is non-empty. Handle empty data or escape sequences appropriately.
+  \item \textit{Reset Buffers on Failure}: Reset buffers if a file read operation fails to ensure clearing potentially unsafe leftover data.
+  \item \textit{File Identification Using Hashes}: Instead of relying solely on file names for identification, consider using a hash of the file's content or metadata for a more stable means of identification.
+  \item \textit{Canonicalize Path Names}: Canonicalize path names of files. 
+  \item \textit{Access Permissions for Files}: Create files with appropriate access permissions to safeguard sensitive information. 
+  \item \textit{File Closure Before Removal}: A file should be closed before removing it from the file system, additionally ensure all its supplementary files/attributes related to it are also being removed.
+  \item \textit{File Name Conflict Checks}: Check for existing file name conflicts and ensure the file is closed before executing a renaming operation.
+  \item \textit{Single Character Re-Processing}: Re-process a single processed character (pushback) by the stream/buffer instead of multiple re-processing of characters in a file operation.
+  \item \textit{Format-Specific Operations}: File operations should be specific to their formats (e.g., text file format may have special sequences of standards, binary file format includes raw sequential bytes).
+  \item \textit{Secure File Operations Directory}: Conduct file operations only within a secure and trusted directory. 
+  \item \textit{Dedicated Temporary File Directory}: Use a dedicated temporary file directory; never use a shared location.
+  \item \textit{Link Existence Check}: If file operations involve links to directories, ensure that the link exists before opening or executing operations on the file object.
+  \item \textit{Sandboxing Techniques}: Use techniques such as jails, containers, or sandboxing to confine applications to specific directories and reduce system-wide vulnerability induced by the application.
+  \item \textit{Symbolic Link Operations}: While operating on a file given by a symbolic link, ensure proper checks and validations are in place. 
+  \item \textit{Revocation of Privileges}: While revoking privileges, ensure there are no pending operations that utilize those privileges, start with the least critical privileges, and ensure privileges are successfully revoked.
+  \item \textit{Data Transfer Integrity}: To ensure correct data transfer between systems, always consider it's byte order, i.e., little or big-endian serialization.
+  \item \textit{Specialized Functions for I/O}: Use compatible specialized functions for I/O/FILE operations rather than utilizing commonly available functions.
+  \item \textit{Handle file-related errors}: Handle file-related errors thrown by the underlying file system or environment.
+  \item \textit{Remove temporary files on termination}: Ensure temporary files are properly removed during safe termination.
+  \item \textit{Environment Variable Validation}: Validate and handle environment variables appropriately to avoid size-related issues. Implement an arbitrary safe limit on size assumptions of environment variables.
+  \item \textit{Mitigating Environmental Conflicts}: Mitigate conflicting environmental variables with the same name.
+  \item \textit{File Object References}: Return a reference to file objects instead of copying them to avoid resource management issues.
+\end{enumerate}
+
+\subsection{Testing}
+\label{ESSTesting}
+
+\begin{enumerate}
+  \item \textit{Mandatory Test Cases}: Every codebase must include comprehensive test cases. 
+  \item \textit{Unit Tests for Functions}: Implement unit tests for every function within loosely coupled codebases. 
+  \item \textit{Integration Tests for External Inputs}: Use integration tests to validate the handling of external inputs across multiple interface functions.
+  \item \textit{Test High Cohesion Functions}: All high-cohesion functions within loosely coupled codebases should include test cases for all known outputs, including all possible variants of enumerations. This requirement applies to wrapper functions as well.
+  \item \textit{Result and Option Return Types}: Functions that return \texttt{Result} types (e.g., \texttt{ok} or \texttt{err}) or \texttt{Option} types (e.g., \texttt{none} or \texttt{some}) must be tested for all possible variants. 
+  \item \textit{Assertion Validation}: Never rely on assertions compared to function-specific test cases. 
+  \item \textit{Assertions without side effects}: Assertions that check the correctness of the code should not produce side effects that modify the state of the code.
+\end{enumerate}
+
+\subsection{Languages}
+\label{ESSLanguages}
+
+\begin{enumerate}
+  \item \textit{Primary Language Requirement}: The repository must specify a primary programming language, which should be publicly documented.
+  \item \textit{Compile-Strict Languages} Prefer languages that offer compile-time evaluation keywords and have strict compilers.
+  \item \textit{Polyglot Rule}: Code written in secondary high-level languages must be placed in separate files and imported into the primary language's codebase.
+  \item \textit{Encapsulation of Polyglot Methods}: Polyglot methods must be encapsulated in isolated modules or codebases.
+  \item \textit{Separation of Hardware-Specific Code}: Hardware-specific code, such as assembly language or binary instructions, must be placed in separate files and imported into the primary language, similar to the polyglot rule.
+  \item \textit{Variant Management}: Hardware-specific code must have variants for each target environment. 
+  \item \textit{Achieve Zero Compiler Warnings}: Ensure that the codebase compiles with zero warnings to meet the highest safety standards.
+  \item \textit{Adhere to Language Standards}: Follow the rules defined in the official language documentation and adhere strictly to language standards. 
+  \item \textit{Intended Use of Identifiers}: Use predefined or language-reserved identifiers for their intended use according to their intended syntax.
+\end{enumerate}
+
+\subsection{Libraries}
+\label{ESSLibraries}
+
+\begin{enumerate}
+  \item \textit{Avoid Duplicate Inclusions}: Prevent iterative compilation issues by ensuring that the inclusion of source code or libraries is not duplicated.
+  \item \textit{Evaluate Imported Libraries}: Carefully assess imported libraries based on their usage history in mission-critical applications, their developers, and other relevant factors to ensure safety and compliance.
+  \item \textit{Use Wrapper Functions}: Use newly defined wrapper functions instead of calling library functions directly.
+  \item \textit{Validate External Library Data}: Validate data returned by external libraries before use. 
+  \item \textit{Use Package Managers}: Prefer languages with package managers that handle importing libraries and external modules automatically, to prevent manual import inconsistencies.
+  \item \textit{Check Conflicts Identifiers}: Avoid importing codebases that may include conflicting identifiers; ensure the imported codebase is conflict-free.
+  \item \textit{Memory and Thread Safety}: External libraries should be memory and thread-safe and follows the ESS guidelines.
+  \item \textit{Mathematical Libraries}: Use mathematical libraries that handle domain and range errors internally; validate inputs before passing to mathematical functions and implement appropriate error handling.
+  \item \textit{Error-Handling Mechanisms}: Use only libraries that implement error-handling mechanisms; avoid any equivalents that do not.
+  \item \textit{Compatible Error-Handling Strategies}: Use libraries that provide error detection without dictating specific error handling strategies that might be incompatible.
+  \item \textit{Standard Library Error Handling}: Handle standard library errors efficiently.
+\end{enumerate}
+
+\subsection{Trust}
+\label{ESSTrust}
+
+\begin{enumerate}
+  \item \textit{Prevent untrusted execution termination}: Never allow an untrusted execution to terminate the program.
+  \item \textit{Serialization/sanitization procedures}: Serialization/sanitization procedure applied to any resource or data structure before passing to untrusted execution should prevent exposure and mitigates risks for the trusted execution or its state.
+  \item \textit{Trusting Untrusted Code}: Never assume untrusted code may not misuse its offered privileges.
+  \item \textit{Trust hierarchy in execution}: Untrusted code execution should only be followed by trusted code execution.
+  \item \textit{Pass copies of data}: Pass copies of data instead of references when sharing data with untrusted executions.
+  \item \textit{No hard-coded sensitive information}: Do not hard-code sensitive information. Design protocols that prefer avoiding constants or literals.
+  \item \textit{Sensitive data uniqueness and immutability}: Sensitive data should remain unique and immutable.
+  \item \textit{Access immutable sensitive data}: Access immutable sensitive data via references to encapsulate and prevent cloning or unintended operations.
+  \item \textit{Senstive Data with Bounds}: avoid sharing sensitive data without explicitly defined bounds.
+  \item \textit{Sensitive Data Positioning}: Operations or functions that operate on sensitive data must be positioned at the beginning of the memory layout and should not be followed by non-sensitive data. 
+  \item \textit{Sandboxing Sensitive Operations}: Keep sensitive operations isolated in a sandboxed environment with minimal access to required operations only.
+  \item \textit{Sensitive Information Handling}: Do not log or cache sensitive information.
+  \item \textit{Minimize Sensitive Data Lifetime}: Minimize in-memory lifetime of raw sensitive data.
+  \item \textit{Sensitive Information Protection}: Protect sensitive information (such as passwords, encryption keys, or personal data) by ensuring it is not inadvertently written to disk.
+  \item \textit{Memory allocation for sensitive information}: Sensitive information should remain within its allocated memory space.
+  \item \textit{Do not serialize unencrypted sensitive data}: Do not serialize unencrypted sensitive data.
+  \item \textit{Sensitive-Encrypted Data Storage}: Store only encrypted sensitive data on disk or persistent storage.
+  \item \textit{Use provable secure cryptography}: Use only provable secure cryptography for data exchange and tamper-proof authentication.
+  \item \textit{Cryptographic signatures on sensitive operations}: Use cryptographic signatures only on code that performs privileged and sensitive operations.
+  \item \textit{Validate codebases for tamper-proofing}: Use cryptographic signatures and hashes for tamper-proofing codebases.
+  \item \textit{Cryptographic Data Exchange}: Use cryptographic primitives for data exchange of sensitive information between untrusted modules or networks.
+  \item \textit{Use cryptographic signatures}: Use cryptographic signatures on serialized data when passing it beyond a trusted boundary.
+  \item \textit{Weak Cryptographic Algorithms}: Avoid potentially weak cryptographic algorithms/functions that are proved to be breakable under polynomial time.
+  \item \textit{Use Cryptographically Secure RNGs}: Random number generator function should be cryptographically secure and provides provable randomness.
+\end{enumerate}
+
+\subsection{Others}
+\label{ESSOthers}
+
+\begin{enumerate}
+  \item \textit{No Unsafe Code}: Do not use unsafe constructs (e.g., unions) under any circumstances.
+  \item \textit{Number Systems}: Use only decimal and hexadecimal number systems. Avoid using octal.
+  \item \textit{Avoid Type-Unsafe Constructs}: Avoid any type-unsafe constructs, this includes variadic functions, incompatible type casting, pointers, textual substitutions, etc.
+  \item \textit{Prefer Procedural over Polymorphism}: Do not use polymorphism, class, or inheritance-based approaches to achieve code reusability. Instead, use a procedural programming i.e., functional approach. 
+  \item \textit{Compile-Time Checks}: Prefer compile-time checks to runtime checks, as they evaluate the program before execution. 
+  \item \textit{Respect Program Constraints}: Do not violate any program-specific constraints defined in the codebase.
+  \item \textit{Safe termination logic}: Define safe termination logic with proper closure of existing resources within the program to handle both internal and external termination requests.
+  \item \textit{Non-local Jumps}: Avoid non-local jumps that disrupt control flow; use linear-structured control flow instead.
+  \item \textit{Avoid overriding safe constructs}: Do not override safe constructs or operations with unsafe constructs or operations.
+  \item \textit{Avoid runtime structure inspection}: Avoid inspecting or altering a program's structure at runtime.
+  \item \textit{Order of Evaluation}: Avoid relying on order of evaluation for evaluating side effects.
+  \item \textit{Efficient Tokenization}: Tokenization of strings should be efficiently handled with delimiters, and that the original string is not modified.
+  \item \textit{Bounds-Checking for Strings}: Use bounds-checking interfaces for string manipulation to prevent buffer overflows. 
+  \item \textit{Valid Indices}: Do not use or access any value or indices that are outside their defined ranges.
+  \item \textit{Serialize data from immutable objects only}: Serialize data from immutable objects only.
+\end{enumerate}
+
+\end{document}
